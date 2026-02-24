@@ -36,7 +36,12 @@ jobs:
             "https://regios.org.pl/konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/"
 
           # Create a redirect from root to the downloaded page
-          echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/"></head><body></body></html>' > index.html
+          REDIRECT_TARGET="$(find . -mindepth 1 -maxdepth 3 -type f -name index.html ! -path './index.html' | head -n 1 | sed -e 's|^\./||' -e 's|index.html$||')"
+          if [ -z "$REDIRECT_TARGET" ]; then
+            echo "Downloaded page entrypoint not found."
+            exit 1
+          fi
+          echo "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0;url=${REDIRECT_TARGET}\"></head><body></body></html>" > index.html
 
           # Custom domain for GitHub Pages
           echo 'polska.regionalna.regios.org.pl' > CNAME
