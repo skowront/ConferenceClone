@@ -2,7 +2,7 @@ name: Deploy Single WP Page
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # daily at midnight UTC
+    - cron: '0 0 * * *'
   workflow_dispatch:
 
 jobs:
@@ -12,45 +12,33 @@ jobs:
       contents: write
 
     steps:
-      # 1️⃣ Checkout
-      - name: Checkout repository
+      - name: Checkout repo
         uses: actions/checkout@v3
 
-      # 2️⃣ Install wget
       - name: Install wget
         run: sudo apt-get update && sudo apt-get install -y wget
 
-      # 3️⃣ Download contest page and assets
       - name: Download konkurs page
         run: |
           rm -rf public
           mkdir public
           cd public
 
-          # Download the page with all required assets
+          # Just download everything from the page and keep the folder structure
           wget \
             --page-requisites \
             --convert-links \
             --adjust-extension \
             --span-hosts \
             --no-parent \
+            --directory-prefix=. \
             "https://regios.org.pl/konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/"
+          
+          # Wget will create a folder matching the page URL
+          # GitHub Pages just needs this folder as root
+          # Create a small index.html that redirects to it
+          echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/"></head><body></body></html>' > index.html
 
-          # Dynamically find the HTML file Wget created
-          HTML_FILE=$(find . -type f -name "index.html" | head -n 1)
-          echo "Found HTML file: $HTML_FILE"
-
-          # Move it to root index.html
-          mv "$HTML_FILE" ./index.html
-
-          # Copy all other files (CSS/JS/images) to root
-          ROOT_DIR=$(dirname "$HTML_FILE")
-          if [ "$ROOT_DIR" != "." ]; then
-            cp -r "$ROOT_DIR"/* .
-            rm -rf "$ROOT_DIR"
-          fi
-
-      # 4️⃣ Deploy
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
