@@ -33,10 +33,10 @@ jobs:
             --no-parent \
             --no-host-directories \
             --directory-prefix=. \
-            "https://regios.org.pl/konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/"
+            "https://regios.org.pl/polska-regionalna/"
 
           # Create a redirect from root to the downloaded page
-          echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/"></head><body></body></html>' > index.html
+          echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=polska-regionalna/"></head><body></body></html>' > index.html
 
           # Custom domain for GitHub Pages
           echo 'polska.regionalna.regios.org.pl' > CNAME
