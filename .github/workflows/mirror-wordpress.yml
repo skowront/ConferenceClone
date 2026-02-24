@@ -36,9 +36,9 @@ jobs:
             "https://regios.org.pl/konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/"
 
           # Create a redirect from root to the downloaded page
-          REDIRECT_TARGET="$(find . -mindepth 1 -maxdepth 3 -type f -name index.html ! -path './index.html' | head -n 1 | sed -e 's|^\./||' -e 's|index.html$||')"
+          REDIRECT_TARGET="$(find . -mindepth 1 -maxdepth 5 -type f -name index.html ! -path './index.html' | head -n 1 | sed -e 's|^\./||' -e 's|index.html$||')"
           if [ -z "$REDIRECT_TARGET" ]; then
-            echo "Downloaded page entrypoint not found."
+            echo "Error: No downloaded index.html entrypoint found (searched up to depth 5)."
             exit 1
           fi
           echo "<!DOCTYPE html><html><head><meta http-equiv=\"refresh\" content=\"0;url=${REDIRECT_TARGET}\"></head><body></body></html>" > index.html
