@@ -1,8 +1,8 @@
-name: Mirror WordPress Site
+name: Mirror WordPress Single Page
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # Runs daily
+    - cron: '0 0 * * *'  # Runs daily at midnight UTC
   workflow_dispatch:
 
 jobs:
@@ -12,7 +12,7 @@ jobs:
       contents: write
 
     steps:
-      - name: Checkout repo
+      - name: Checkout repository
         uses: actions/checkout@v3
 
       - name: Install wget
@@ -20,16 +20,19 @@ jobs:
 
       - name: Scrape single page
         run: |
+          rm -rf public
           mkdir public
           wget \
             --page-requisites \
             --convert-links \
             --adjust-extension \
+            --no-host-directories \
+            --directory-prefix=public \
             -O public/index.html \
-            https://regios.org.pl//konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/
+            "https://regios.org.pl/konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/"
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./regios.org.pl
+          publish_dir: ./public
