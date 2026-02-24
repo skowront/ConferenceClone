@@ -2,7 +2,7 @@ name: Deploy Single WP Page
 
 on:
   schedule:
-    - cron: '0 0 * * *'  # daily
+    - cron: '0 0 * * *'  # runs daily at midnight UTC
   workflow_dispatch:
 
 jobs:
@@ -12,24 +12,38 @@ jobs:
       contents: write
 
     steps:
+      # 1️⃣ Checkout repository
       - name: Checkout repository
         uses: actions/checkout@v3
 
+      # 2️⃣ Install wget
       - name: Install wget
         run: sudo apt-get update && sudo apt-get install -y wget
 
+      # 3️⃣ Download contest page and assets
       - name: Download konkurs page
         run: |
           rm -rf public
           mkdir public
           cd public
 
-          # Download main page as index.html
-          wget "https://regios.org.pl/konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/" -O index.html
+          # Download the contest page with all required assets
+          wget \
+            --page-requisites \
+            --convert-links \
+            --adjust-extension \
+            --span-hosts \
+            --no-parent \
+            "https://regios.org.pl/konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/"
 
-          # Download all CSS/JS/images referenced by this page
-          wget -i index.html --page-requisites --convert-links --adjust-extension --span-hosts
-          
+          # Move the main HTML file to root index.html
+          # Wget creates a folder for the page; this moves it to root
+          PAGE_DIR=$(find . -type d -name "konkurs-innov*" -maxdepth 1)
+          mv "$PAGE_DIR/index.html" ./index.html
+          cp -r "$PAGE_DIR"/* ./
+          rm -rf "$PAGE_DIR"
+
+      # 4️⃣ Deploy to GitHub Pages
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
