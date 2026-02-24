@@ -35,8 +35,8 @@ jobs:
             --directory-prefix=. \
             "https://regios.org.pl/polska-regionalna/"
 
-          # Create a redirect from root to the downloaded page
-          echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=polska-regionalna/"></head><body></body></html>' > index.html
+          # Mirror the downloaded page directory at root so / serves the same content as /polska-regionalna/
+          cp -r polska-regionalna/. .
 
           # Custom domain for GitHub Pages
           echo 'polska.regionalna.regios.org.pl' > CNAME
