@@ -18,16 +18,15 @@ jobs:
       - name: Install wget
         run: sudo apt-get update && sudo apt-get install -y wget
 
-      - name: Scrape site
+      - name: Scrape single page
         run: |
+          mkdir public
           wget \
             --page-requisites \
             --convert-links \
             --adjust-extension \
-            --span-hosts \
-            --no-directories \
-            --directory-prefix=public \
-            https://regios.org.pl/konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/
+            -O public/index.html \
+            https://regios.org.pl//konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
