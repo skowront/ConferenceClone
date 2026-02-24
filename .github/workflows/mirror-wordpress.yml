@@ -24,20 +24,22 @@ jobs:
           mkdir public
           cd public
 
-          # Just download everything from the page and keep the folder structure
+          # Download the page and all its assets without creating a host subdirectory
           wget \
             --page-requisites \
             --convert-links \
             --adjust-extension \
             --span-hosts \
             --no-parent \
+            --no-host-directories \
             --directory-prefix=. \
             "https://regios.org.pl/konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/"
-          
-          # Wget will create a folder matching the page URL
-          # GitHub Pages just needs this folder as root
-          # Create a small index.html that redirects to it
+
+          # Create a redirect from root to the downloaded page
           echo '<!DOCTYPE html><html><head><meta http-equiv="refresh" content="0;url=konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/"></head><body></body></html>' > index.html
+
+          # Custom domain for GitHub Pages
+          echo 'polska.regionalna.regios.org.pl' > CNAME
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
