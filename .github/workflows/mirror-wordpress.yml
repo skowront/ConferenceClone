@@ -1,8 +1,8 @@
-name: Mirror WordPress Single Page
+name: Deploy Single WP Page
 
 on:
   schedule:
-    - cron: '0 0 * * *'
+    - cron: '0 0 * * *'  # daily
   workflow_dispatch:
 
 jobs:
@@ -18,26 +18,18 @@ jobs:
       - name: Install wget
         run: sudo apt-get update && sudo apt-get install -y wget
 
-      - name: Scrape single page
+      - name: Download konkurs page
         run: |
           rm -rf public
           mkdir public
           cd public
-          wget \
-            --page-requisites \
-            --convert-links \
-            --adjust-extension \
-            --no-host-directories \
-            --restrict-file-names=windows \
-            --no-parent \
-            https://regios.org.pl/konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/
 
-          # Move the main HTML to root
-          mv regios.org.pl/konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/index.html ./index.html
+          # Download main page as index.html
+          wget "https://regios.org.pl/konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/" -O index.html
 
-          # Optional: move CSS/JS/assets to root too
-          cp -r regios.org.pl/konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/* .
-
+          # Download all CSS/JS/images referenced by this page
+          wget -i index.html --page-requisites --convert-links --adjust-extension --span-hosts
+          
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
