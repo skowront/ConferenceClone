@@ -32,10 +32,11 @@ jobs:
             --no-parent \
             https://regios.org.pl/konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/
 
-      - name: Move page to root index.html
-        run: |
-          cd public
-          mv regios.org.pl/konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/index.html ./index.html || true
+          # Move the main HTML to root
+          mv regios.org.pl/konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/index.html ./index.html
+
+          # Optional: move CSS/JS/assets to root too
+          cp -r regios.org.pl/konkurs-innowacyjnie-zielony-slask-przyszlosci-ii-edycja/* .
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
