@@ -41,6 +41,11 @@ jobs:
           # Custom domain for GitHub Pages
           echo 'polska.regionalna.regios.org.pl' > CNAME
 
+      - name: Fix accordion anchor links
+        run: |
+          find public -type f -name "*.html" -exec \
+            sed -i 's|href="index\.html#accordion-|href="#accordion-|g' {} +
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
