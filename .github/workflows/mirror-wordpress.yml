@@ -46,6 +46,13 @@ jobs:
           find public -type f -name "*.html" -exec \
             sed -i 's|href="index\.html#accordion-|href="#accordion-|g' {} +
 
+      - name: Fix Kubio tab anchors
+        run: |
+          find public -type f -name "*.html" -exec \
+            sed -i 's|href="index\.html#\(obronnosc\)"|href="#\1"|g' {} +
+          find public -type f -name "*.html" -exec \
+            sed -i 's|rel="index\.html#\(obronnosc\)"|rel="#\1"|g' {} +
+
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
         with:
